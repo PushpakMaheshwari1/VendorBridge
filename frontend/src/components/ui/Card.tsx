@@ -1,36 +1,34 @@
-/**
- * Card — Generic surface container
- * TODO: Add hover state, clickable variant.
- */
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-import React from 'react'
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("rounded-xl border bg-card text-card-foreground shadow", className)} {...props} />
+))
+Card.displayName = "Card"
 
-interface CardProps {
-  children: React.ReactNode
-  className?: string
-  padding?: 'none' | 'sm' | 'md' | 'lg'
-}
+const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+))
+CardHeader.displayName = "CardHeader"
 
-const paddingMap = { none: '', sm: 'p-4', md: 'p-6', lg: 'p-8' }
+const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(({ className, ...props }, ref) => (
+  <h3 ref={ref} className={cn("font-semibold leading-none tracking-tight", className)} {...props} />
+))
+CardTitle.displayName = "CardTitle"
 
-export function Card({ children, className = '', padding = 'md' }: CardProps) {
-  return (
-    <div className={`bg-white rounded-xl border border-gray-200 shadow-sm ${paddingMap[padding]} ${className}`}>
-      {children}
-    </div>
-  )
-}
+const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(({ className, ...props }, ref) => (
+  <p ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />
+))
+CardDescription.displayName = "CardDescription"
 
-interface CardHeaderProps { title: string; description?: string; actions?: React.ReactNode }
+const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+))
+CardContent.displayName = "CardContent"
 
-export function CardHeader({ title, description, actions }: CardHeaderProps) {
-  return (
-    <div className="flex items-start justify-between mb-4">
-      <div>
-        <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-        {description && <p className="mt-0.5 text-sm text-gray-500">{description}</p>}
-      </div>
-      {actions && <div>{actions}</div>}
-    </div>
-  )
-}
+const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />
+))
+CardFooter.displayName = "CardFooter"
+
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }

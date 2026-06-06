@@ -1,67 +1,36 @@
-/**
- * Table — Generic data table wrapper
- * TODO: Add sorting, row selection, column pinning.
- */
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-import React from 'react'
+const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(({ className, ...props }, ref) => (
+  <div className="relative w-full overflow-auto">
+    <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+  </div>
+))
+Table.displayName = "Table"
 
-interface Column<T> {
-  key: string
-  header: string
-  render?: (row: T) => React.ReactNode
-  className?: string
-}
+const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(({ className, ...props }, ref) => (
+  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+))
+TableHeader.displayName = "TableHeader"
 
-interface TableProps<T> {
-  columns: Column<T>[]
-  data: T[]
-  keyExtractor: (row: T) => string
-  isLoading?: boolean
-  emptyMessage?: string
-}
+const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(({ className, ...props }, ref) => (
+  <tbody ref={ref} className={cn("[&_tr:last-child]:border-0", className)} {...props} />
+))
+TableBody.displayName = "TableBody"
 
-export function Table<T>({ columns, data, keyExtractor, isLoading, emptyMessage = 'No records found.' }: TableProps<T>) {
-  return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200">
-      <table className="min-w-full divide-y divide-gray-200 text-sm">
-        <thead className="bg-gray-50">
-          <tr>
-            {columns.map((col) => (
-              <th
-                key={col.key}
-                className={`px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider ${col.className ?? ''}`}
-              >
-                {col.header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-100">
-          {isLoading ? (
-            <tr>
-              <td colSpan={columns.length} className="py-12 text-center text-gray-400">
-                Loading...
-              </td>
-            </tr>
-          ) : data.length === 0 ? (
-            <tr>
-              <td colSpan={columns.length} className="py-12 text-center text-gray-400">
-                {emptyMessage}
-              </td>
-            </tr>
-          ) : (
-            data.map((row) => (
-              <tr key={keyExtractor(row)} className="hover:bg-gray-50 transition-colors">
-                {columns.map((col) => (
-                  <td key={col.key} className={`px-4 py-3 text-gray-700 ${col.className ?? ''}`}>
-                    {col.render ? col.render(row) : String((row as Record<string, unknown>)[col.key] ?? '—')}
-                  </td>
-                ))}
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
-  )
-}
+const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(({ className, ...props }, ref) => (
+  <tr ref={ref} className={cn("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", className)} {...props} />
+))
+TableRow.displayName = "TableRow"
+
+const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>>(({ className, ...props }, ref) => (
+  <th ref={ref} className={cn("h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0", className)} {...props} />
+))
+TableHead.displayName = "TableHead"
+
+const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<HTMLTableCellElement>>(({ className, ...props }, ref) => (
+  <td ref={ref} className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)} {...props} />
+))
+TableCell.displayName = "TableCell"
+
+export { Table, TableHeader, TableBody, TableHead, TableRow, TableCell }

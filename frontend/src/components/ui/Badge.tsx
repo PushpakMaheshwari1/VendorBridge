@@ -1,29 +1,35 @@
-/**
- * Badge — Status/label badge component
- * Replaces the old StatusBadge.tsx at components/StatusBadge.tsx
- */
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
 
-import { getStatusColor } from '../../utils/formatters'
+const badgeVariants = cva(
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+        secondary:
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive:
+          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        outline: "text-foreground",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
 
-interface BadgeProps {
-  label: string
-  /** If true, uses the status-color map from formatters; otherwise renders in gray */
-  isStatus?: boolean
-  className?: string
-}
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {}
 
-export function Badge({ label, isStatus = false, className = '' }: BadgeProps) {
-  const colorClass = isStatus ? getStatusColor(label) : 'bg-gray-100 text-gray-700'
+function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${colorClass} ${className}`}
-    >
-      {label.replace(/_/g, ' ')}
-    </span>
+    <div className={cn(badgeVariants({ variant }), className)} {...props} />
   )
 }
 
-/** Convenience wrapper — status-colored badge */
-export function StatusBadge({ status }: { status: string }) {
-  return <Badge label={status} isStatus />
-}
+export { Badge, badgeVariants }
