@@ -11,8 +11,12 @@ WORKDIR /app
 # Copy package files first for layer caching
 COPY package.json package-lock.json* ./
 
-# Install dependencies
-RUN npm install
+# Bypass potential Docker DNS/IPv6 issues on Windows
+RUN npm config set registry http://registry.npmjs.org/ && \
+    npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm install
 
 # Copy the rest of the source code
 # (In development, source is mounted as a volume — this runs Vite dev server)
